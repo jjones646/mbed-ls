@@ -29,7 +29,7 @@ from lstools_linux_generic import MbedLsToolsLinuxGeneric
 from lstools_darwin import MbedLsToolsDarwin
 
 
-def create(debug=False):
+def create():
     """! Factory used to create host OS specific mbed-lstools object
 
     @return Returns MbedLsTools object or None if host OS is not supported
@@ -42,7 +42,7 @@ def create(debug=False):
         if mbed_os == 'Windows7': result = MbedLsToolsWin7()
         elif mbed_os == 'Ubuntu': result = MbedLsToolsUbuntu()
         elif mbed_os == 'LinuxGeneric': result = MbedLsToolsLinuxGeneric()
-        elif mbed_os == 'Darwin': result = MbedLsToolsDarwin(debug=debug)
+        elif mbed_os == 'Darwin': result = MbedLsToolsDarwin()
     return result
 
 def mbed_os_support():
@@ -149,7 +149,7 @@ def mbedls_main():
     @details Function exits back to command line with ERRORLEVEL
     """
     (opts, args) = cmd_parser_setup()
-    mbeds = create(opts.debug)
+    mbeds = create()
 
     if mbeds is None:
         sys.stderr.write('This platform is not supported! Pull requests welcome at github.com/ARMmbed/mbed-ls\n')
@@ -179,27 +179,27 @@ def mbedls_main():
                 mid = token[1:]
                 mbeds.mock_manufacture_ids(mid, 'dummy', oper=oper)
         if opts.json:
-            print(json.dumps(mbeds.mock_read(), indent=4))
+            print json.dumps(mbeds.mock_read(), indent=4)
 
     elif opts.json:
-        print(json.dumps(mbeds.list_mbeds_ext(), indent=4, sort_keys=True))
+        print json.dumps(mbeds.list_mbeds_ext(), indent=4, sort_keys=True)
 
     elif opts.json_by_target_id:
-        print(json.dumps(mbeds.list_mbeds_by_targetid(), indent=4, sort_keys=True))
+        print json.dumps(mbeds.list_mbeds_by_targetid(), indent=4, sort_keys=True)
 
     elif opts.json_platforms:
-        print(json.dumps(mbeds.list_platforms(), indent=4, sort_keys=True))
+        print json.dumps(mbeds.list_platforms(), indent=4, sort_keys=True)
 
     elif opts.json_platforms_ext:
-        print(json.dumps(mbeds.list_platforms_ext(), indent=4, sort_keys=True))
+        print json.dumps(mbeds.list_platforms_ext(), indent=4, sort_keys=True)
 
     elif opts.version:
         import pkg_resources  # part of setuptools
         version = pkg_resources.require("mbed-ls")[0].version
-        print(version)
+        print version
 
     else:
-        print(mbeds.get_string(border=not opts.simple, header=not opts.simple))
+        print mbeds.get_string(border=not opts.simple, header=not opts.simple)
 
     if mbeds.DEBUG_FLAG:
         mbeds.debug(__name__, "Return code: %d" % mbeds.ERRORLEVEL_FLAG)

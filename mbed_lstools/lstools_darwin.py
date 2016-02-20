@@ -26,16 +26,14 @@ from term_formats import fixedWidthFormat, treeLogger
 
 
 class MbedLsToolsDarwin(MbedLsToolsBase):
-    """ MbedLsToolsDarwin supports mbed-enabled platforms detection on
-    Mac OS X.
-    """
+    """ MbedLsToolsDarwin supports mbed-enabled platforms detection on Mac OS X """
 
     mbed_volume_name_match = re.compile(r'(\bmbed\b|\bSEGGER MSD\b)', re.I)
 
-    def __init__(self, debug=False):
+    def __init__(self):
         MbedLsToolsBase.__init__(self)
         logger = logging.getLogger(__name__)
-        if debug:
+        if self.debug:
             logger.setLevel(logging.DEBUG)
 
         # set the logging format
@@ -68,8 +66,14 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
             valid_volumes[key] = volumes[key]
 
         # put together all of that info into the expected format:
-        result = [{'mount_point': mounts[v], 'serial_port': volumes[v]['tty'], 'target_id': self.target_id(
-            volumes[v]), 'platform_name': self.platform_name(self.target_id(volumes[v]))} for v in valid_volumes]
+        result =  [
+            {
+                 'mount_point': mounts[v],
+                 'serial_port': volumes[v]['tty'],
+                   'target_id': self.target_id(volumes[v]),
+               'platform_name': self.platform_name(self.target_id(volumes[v]))
+            } for v in valid_volumes
+        ]
 
         self.ERRORLEVEL_FLAG = 0
 
@@ -84,13 +88,11 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
                 # Deducing mbed-enabled TargetID based on available targetID definition DB.
                 # If TargetID from USBID is not recognized we will try to check
                 # URL in mbed.htm
-                htm_target_id = self.get_mbed_htm_target_id(
-                    result[i]['mount_point'])
+                htm_target_id = self.get_mbed_htm_target_id(result[i]['mount_point'])
                 if htm_target_id:
                     result[i]['target_id_usb_id'] = result[i]['target_id']
                     result[i]['target_id'] = htm_target_id
-                    result[i]['platform_name'] = self.platform_name(
-                        htm_target_id[:4])
+                    result[i]['platform_name'] = self.platform_name(htm_target_id[:4])
                 result[i]['target_id_mbed_htm'] = htm_target_id
 
         return result
@@ -99,8 +101,7 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
         ''' Returns map {volume_id: mount_point} '''
 
         # list disks, this gives us disk name, and volume name + mount point:
-        diskutil_ls = subprocess.Popen(
-            ['diskutil', 'list', '-plist'], stdout=subprocess.PIPE)
+        diskutil_ls = subprocess.Popen(['diskutil', 'list', '-plist'], stdout=subprocess.PIPE)
         disks = plistlib.readPlist(diskutil_ls.stdout)
         diskutil_ls.wait()
 
