@@ -26,14 +26,16 @@ from term_formats import fixedWidthFormat, treeLogger
 
 
 class MbedLsToolsDarwin(MbedLsToolsBase):
-    """ MbedLsToolsDarwin supports mbed-enabled platforms detection on Mac OS X """
+    """ MbedLsToolsDarwin supports mbed-enabled platforms detection on Mac OS X
+    """
 
     mbed_volume_name_match = re.compile(r'(\bmbed\b|\bSEGGER MSD\b)', re.I)
 
-    def __init__(self):
+    def __init__(self, debug=False):
         MbedLsToolsBase.__init__(self)
         logger = logging.getLogger(__name__)
-        if self.debug:
+        logger.setLevel(logging.CRITICAL)
+        if debug:
             logger.setLevel(logging.DEBUG)
 
         # set the logging format
@@ -86,8 +88,7 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
 
             if result[i]['mount_point']:
                 # Deducing mbed-enabled TargetID based on available targetID definition DB.
-                # If TargetID from USBID is not recognized we will try to check
-                # URL in mbed.htm
+                # If TargetID from USBID is not recognized we will try to check URL in mbed.htm
                 htm_target_id = self.get_mbed_htm_target_id(result[i]['mount_point'])
                 if htm_target_id:
                     result[i]['target_id_usb_id'] = result[i]['target_id']

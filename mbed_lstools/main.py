@@ -29,7 +29,7 @@ from lstools_linux_generic import MbedLsToolsLinuxGeneric
 from lstools_darwin import MbedLsToolsDarwin
 
 
-def create():
+def create(debug=False):
     """! Factory used to create host OS specific mbed-lstools object
 
     @return Returns MbedLsTools object or None if host OS is not supported
@@ -42,7 +42,7 @@ def create():
         if mbed_os == 'Windows7': result = MbedLsToolsWin7()
         elif mbed_os == 'Ubuntu': result = MbedLsToolsUbuntu()
         elif mbed_os == 'LinuxGeneric': result = MbedLsToolsLinuxGeneric()
-        elif mbed_os == 'Darwin': result = MbedLsToolsDarwin()
+        elif mbed_os == 'Darwin': result = MbedLsToolsDarwin(debug=debug)
     return result
 
 def mbed_os_support():
@@ -149,7 +149,7 @@ def mbedls_main():
     @details Function exits back to command line with ERRORLEVEL
     """
     (opts, args) = cmd_parser_setup()
-    mbeds = create()
+    mbeds = create(opts.debug)
 
     if mbeds is None:
         sys.stderr.write('This platform is not supported! Pull requests welcome at github.com/ARMmbed/mbed-ls\n')
