@@ -19,16 +19,6 @@ import os
 import logging
 
 
-def getTermDims():
-    """! Returns the terminal dimensions when using the CLI
-        @return [<rows>, <columns>]
-        @details Function that returns the terminal window dimensions of 
-        the currently open terminal at the moment in time when the function
-        is called.
-    """
-    return [int(i) for i in os.popen('stty size', 'r').read().split()]
-
-
 class fixedWidthFormat(logging.Formatter):
     """ Class that defines a fixed-width format for log message prefixes that
         are shown before the log message itself.
@@ -83,11 +73,9 @@ class treeLogger:
         ''' recursively print an intertangled list/dictionary structure
             to a given depth within each dictionary
         '''
-        (h, w) = getTermDims()
-        w -= self.log_prefix_width
         if isinstance(t, list):
             for tree in t:
                 self.show(tree, depth=depth)
-                self.logger.info(w * '~')
+                self.logger.info(80 * '~')
         if isinstance(t, dict):
             self.show_dict(t, depth=depth)
