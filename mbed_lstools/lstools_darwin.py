@@ -244,7 +244,7 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
             for k, v in obj.items():
                 if isinstance(v, dict):
                     set_mbed_devs(v)
-                elif (k == 'IORegistryEntryName' or k == 'kUSBVendorString') and self.mbed_volume_name_match.search(v):
+                elif (k == 'IORegistryEntryName' or k == 'kUSBVendorString' or k == 'USB Vendor Name') and self.mbed_volume_name_match.search(v):
                     usb_info = {
                         'serial': None, 'vendor_id': None, 'product_id': None, 'tty': None, }
                     if 'idVendor' in obj:
