@@ -262,8 +262,9 @@ class MbedLsToolsDarwin(MbedLsToolsBase):
                         disk_id = get_disk_id(mbed_drives, usb_info['serial'])
                         r[disk_id] = usb_info
 
-        for obj in serial_devs:
-            set_mbed_devs(obj)
+        if serial_devs:
+            for obj in serial_devs:
+                set_mbed_devs(obj)
 
         return r
 
