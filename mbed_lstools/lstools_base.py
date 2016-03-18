@@ -388,7 +388,7 @@ class MbedLsToolsBase:
         """
         print 'debug @%s.%s: %s'% (self.__class__.__name__, name, text)
 
-    def __str__(self):
+    def __repr__(self):
         """! Object to string casting
 
         @return Stringified class object should be prettytable formated string

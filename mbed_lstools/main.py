@@ -199,7 +199,8 @@ def mbedls_main():
         print version
 
     else:
-        print mbeds.get_string(border=not opts.simple, header=not opts.simple)
+        s = mbeds.get_string(border=not opts.simple, header=not opts.simple)
+        if s: print s
 
     if mbeds.DEBUG_FLAG:
         mbeds.debug(__name__, "Return code: %d" % mbeds.ERRORLEVEL_FLAG)
