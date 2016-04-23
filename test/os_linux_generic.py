@@ -75,6 +75,32 @@ class LinuxPortTestCase(unittest.TestCase):
           "lrwxrwxrwx 1 root 13 Jan  4 15:01 usb-MBED_MBED_CMSIS-DAP_A000000001-if01 -> ../../ttyACM0"
         ]
 
+        self.disk_list_rpi_1 = [
+            "total 0",
+            "lrwxrwxrwx 1 root 9 Mar 14 07:58 ata-VMware_Virtual_IDE_CDROM_Drive_10000000000000000001 -> ../../sr0",
+            "lrwxrwxrwx 1 root 9 Mar 15 08:35 usb-MBED_VFS_0240000028634e4500135006691700105f21000097969900-0:0 -> ../../sdb",
+            "lrwxrwxrwx 1 root 9 Mar 15 08:35 usb-MBED_VFS_0240000028884e450018700f6bf000338021000097969900-0:0 -> ../../sdc",
+            "lrwxrwxrwx 1 root 9 Mar 14 08:44 usb-MBED_VFS_0240000028884e45001f700f6bf000118021000097969900-0:0 -> ../../sdd",
+            "lrwxrwxrwx 1 root 9 Mar 15 08:35 usb-MBED_VFS_0240000028884e450036700f6bf000118021000097969900-0:0 -> ../../sde",
+            "lrwxrwxrwx 1 root 9 Mar 15 08:35 usb-MBED_VFS_0240000029164e45001b0012706e000df301000097969900-0:0 -> ../../sdd",
+            "lrwxrwxrwx 1 root 9 Mar 14 08:44 usb-MBED_VFS_0240000029164e45002f0012706e0006f301000097969900-0:0 -> ../../sdc"
+        ]
+
+        self.serial_list_rpi_1 = [
+            "total 0",
+            "lrwxrwxrwx 1 root 13 Mar 15 08:35 usb-ARM_DAPLink_CMSIS-DAP_0240000028634e4500135006691700105f21000097969900-if01 -> ../../ttyACM0"
+            "lrwxrwxrwx 1 root 13 Mar 15 08:35 usb-ARM_DAPLink_CMSIS-DAP_0240000028884e450018700f6bf000338021000097969900-if01 -> ../../ttyACM1",
+            "lrwxrwxrwx 1 root 13 Mar 15 08:35 usb-ARM_DAPLink_CMSIS-DAP_0240000028884e450036700f6bf000118021000097969900-if01 -> ../../ttyACM3",
+            "lrwxrwxrwx 1 root 13 Mar 15 08:35 usb-ARM_DAPLink_CMSIS-DAP_0240000029164e45001b0012706e000df301000097969900-if01 -> ../../ttyACM2"
+        ]
+
+        self.mount_list_rpi_1 = [
+            "/dev/sdd on /media/iot/DAPLINK1 type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks2)"
+            "/dev/sdb on /media/iot/DAPLINK2 type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks2)",
+            "/dev/sde on /media/iot/DAPLINK3 type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks2)",
+            "/dev/sdc on /media/iot/DAPLINK type vfat (rw,nosuid,nodev,uid=1000,gid=1000,shortname=mixed,dmask=0077,utf8=1,showexec,flush,uhelper=udisks2)"
+        ]
+
         self.mount_list_1 = [
           "/dev/sdb on /media/usb0 type vfat (rw,noexec,nodev,sync,noatime,nodiratime,gid=1000,uid=1000,dmask=000,fmask=000)",
           "/dev/sdc on /media/usb1 type vfat (rw,noexec,nodev,sync,noatime,nodiratime,gid=1000,uid=1000,dmask=000,fmask=000)"
@@ -161,6 +187,20 @@ class LinuxPortTestCase(unittest.TestCase):
             "lrwxrwxrwx 1 root 10 Dec 11 14:18 wwn-0x5000cca30ccffb77-part5 -> ../../sda5",
         ]
 
+        self.disk_list_4 = [
+            "lrwxrwxrwx 1 root root   9 Mar 31 02:43 ata-VMware_Virtual_SATA_CDRW_Drive_00000000000000000001 -> ../../sr0",
+            "lrwxrwxrwx 1 root root   9 Mar 31 02:43 ata-VMware_Virtual_SATA_CDRW_Drive_01000000000000000001 -> ../../sr1",
+            "lrwxrwxrwx 1 root root   9 Apr  6 02:56 usb-MBED_VFS_0240000033514e45001f500585d40014e981000097969900-0:0 -> ../../sdb"
+        ]
+
+        self.serial_list_4 = [
+            "lrwxrwxrwx 1 root root 13 Apr  6 02:56 pci-ARM_DAPLink_CMSIS-DAP_0240000033514e45001f500585d40014e981000097969900-if01 -> ../../ttyACM0"
+        ]
+
+        self.mount_list_4 = [
+            "/dev/sdb on /media/przemek/DAPLINK type vfat (rw,nosuid,nodev,relatime,uid=1000,gid=1000,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,showexec,utf8,flush,errors=remount-ro,uhelper=udisks2)"
+        ]
+
     def tearDown(self):
         pass
 
@@ -180,6 +220,7 @@ class LinuxPortTestCase(unittest.TestCase):
         self.assertEqual('/media/MBED_x-x', self.linux_generic.get_mount_point('sdc', self.vfat_devices_ext))
 
     def test_get_dev_name(self):
+        # With USB- prefix
         self.assertEqual('ttyACM0', self.linux_generic.get_dev_name('usb-MBED_MBED_CMSIS-DAP_02400201489A1E6CB564E3D4-if01 -> ../../ttyACM0'))
         self.assertEqual('ttyACM2', self.linux_generic.get_dev_name('usb-STMicroelectronics_STM32_STLink_0672FF485649785087171742-if02 -> ../../ttyACM2'))
         self.assertEqual('ttyACM3', self.linux_generic.get_dev_name('usb-MBED_MBED_CMSIS-DAP_0240020152986E5EAF6693E6-if01 -> ../../ttyACM3'))
@@ -187,6 +228,9 @@ class LinuxPortTestCase(unittest.TestCase):
         self.assertEqual('sdb', self.linux_generic.get_dev_name('usb-MBED_microcontroller_02400201489A1E6CB564E3D4-0:0 -> ../../sdb'))
         self.assertEqual('sde', self.linux_generic.get_dev_name('usb-MBED_microcontroller_0240020152986E5EAF6693E6-0:0 -> ../../sde'))
         self.assertEqual('sdd', self.linux_generic.get_dev_name('usb-MBED_microcontroller_0672FF485649785087171742-0:0 -> ../../sdd'))
+        self.assertEqual('sdb', self.linux_generic.get_dev_name('usb-MBED_VFS_0240000033514e45001f500585d40014e981000097969900-0:0 -> ../../sdb'))
+        # With PCI- prefix
+        self.assertEqual('ttyACM0', self.linux_generic.get_dev_name('pci-ARM_DAPLink_CMSIS-DAP_0240000033514e45001f500585d40014e981000097969900-if01 -> ../../ttyACM0'))
 
     def test_get_detected_1_k64f(self):
         # get_detected(self, tids, disk_list, serial_list, mount_list)
@@ -259,6 +303,24 @@ class LinuxPortTestCase(unittest.TestCase):
           ],
           mbed_det)
 
+    def test_get_detected_2_k64f(self):
+        # get_detected(self, tids, disk_list, serial_list, mount_list)
+
+        mbed_det = self.linux_generic.get_detected(self.tids,
+            self.disk_list_4,
+            self.serial_list_4,
+            self.mount_list_4)
+
+        self.assertEqual(1, len(mbed_det))
+        self.assertIn([
+            "FRDM_K64F",
+            "sdb",
+            "/media/przemek/DAPLINK",
+            "/dev/ttyACM0",
+            "usb-MBED_VFS_0240000033514e45001f500585d40014e981000097969900-0:0 -> ../../sdb"
+          ],
+          mbed_det)
+
     def test_get_not_detected_2_unknown_lpc1768_stf401(self):
         # LPC1768 with weird target id like this:
         mbed_ndet = self.linux_generic.get_not_detected(self.tids,
@@ -291,12 +353,36 @@ class LinuxPortTestCase(unittest.TestCase):
         self.assertEqual(2, len(disk_hex_ids))
 
         hex_keys = disk_hex_ids.keys()
+        self.assertEqual(2, len(hex_keys))
         self.assertIn("A000000001", hex_keys)
         self.assertIn("0240020152986E5EAF6693E6", hex_keys)
 
         hex_values = disk_hex_ids.values()
+        self.assertEqual(2, len(hex_values))
         self.assertIn("usb-MBED_FDi_sk_A000000001-0:0 -> ../../sdc", hex_values)
         self.assertIn("usb-MBED_microcontroller_0240020152986E5EAF6693E6-0:0 -> ../../sdb", hex_values)
+
+    def test_get_rpi_disk_hex_ids_1(self):
+        disk_hex_ids = self.linux_generic.get_disk_hex_ids(self.disk_list_rpi_1)
+        self.assertEqual(6, len(disk_hex_ids))
+
+        hex_keys = disk_hex_ids.keys()
+        self.assertEqual(6, len(hex_keys))
+        self.assertIn("0240000028634e4500135006691700105f21000097969900", hex_keys)
+        self.assertIn("0240000028884e450018700f6bf000338021000097969900", hex_keys)
+        self.assertIn("0240000028884e45001f700f6bf000118021000097969900", hex_keys)
+        self.assertIn("0240000028884e450036700f6bf000118021000097969900", hex_keys)
+        self.assertIn("0240000029164e45001b0012706e000df301000097969900", hex_keys)
+        self.assertIn("0240000029164e45002f0012706e0006f301000097969900", hex_keys)
+
+        hex_values = disk_hex_ids.values()
+        self.assertEqual(6, len(hex_values))
+        self.assertIn("usb-MBED_VFS_0240000028634e4500135006691700105f21000097969900-0:0 -> ../../sdb", hex_values)
+        self.assertIn("usb-MBED_VFS_0240000028884e450018700f6bf000338021000097969900-0:0 -> ../../sdc", hex_values)
+        self.assertIn("usb-MBED_VFS_0240000028884e45001f700f6bf000118021000097969900-0:0 -> ../../sdd", hex_values)
+        self.assertIn("usb-MBED_VFS_0240000028884e450036700f6bf000118021000097969900-0:0 -> ../../sde", hex_values)
+        self.assertIn("usb-MBED_VFS_0240000029164e45001b0012706e000df301000097969900-0:0 -> ../../sdd", hex_values)
+        self.assertIn("usb-MBED_VFS_0240000029164e45002f0012706e0006f301000097969900-0:0 -> ../../sdc", hex_values)
 
     def test_get_disk_hex_ids_2(self):
         disk_hex_ids = self.linux_generic.get_disk_hex_ids(self.disk_list_2)
@@ -304,6 +390,7 @@ class LinuxPortTestCase(unittest.TestCase):
 
         # Checking for scanned target ids (in dict keys)
         hex_keys = disk_hex_ids.keys()
+        self.assertEqual(5, len(hex_keys))
         self.assertIn("A000000001", hex_keys)
         self.assertIn("0240020152A06E54AF5E93EC", hex_keys)
         self.assertIn("0672FF485649785087171742", hex_keys)
@@ -311,11 +398,23 @@ class LinuxPortTestCase(unittest.TestCase):
         self.assertIn("0240020152986E5EAF6693E6", hex_keys)
 
         hex_values = disk_hex_ids.values()
+        self.assertEqual(5, len(hex_values))
         self.assertIn("usb-MBED_FDi_sk_A000000001-0:0 -> ../../sdc", hex_values)
         self.assertIn("usb-MBED_microcontroller_0240020152A06E54AF5E93EC-0:0 -> ../../sdf", hex_values)
         self.assertIn("usb-MBED_microcontroller_0672FF485649785087171742-0:0 -> ../../sdd", hex_values)
         self.assertIn("usb-MBED_microcontroller_02400201489A1E6CB564E3D4-0:0 -> ../../sde", hex_values)
         self.assertIn("usb-MBED_microcontroller_0240020152986E5EAF6693E6-0:0 -> ../../sdb", hex_values)
+
+    def test_get_disk_hex_ids_4(self):
+        disk_hex_ids = self.linux_generic.get_disk_hex_ids(self.disk_list_4)
+        self.assertEqual(1, len(disk_hex_ids))
+
+        # Checking for scanned target ids (in dict keys)
+        hex_keys = disk_hex_ids.keys()
+        self.assertIn("0240000033514e45001f500585d40014e981000097969900", hex_keys)
+
+        hex_values = disk_hex_ids.values()
+        self.assertIn("usb-MBED_VFS_0240000033514e45001f500585d40014e981000097969900-0:0 -> ../../sdb", hex_values)
 
     def test_get_dev_by_id_process_ret_0(self):
         id_disks = self.linux_generic.get_dev_by_id_process(self.disk_list_3, 0)
@@ -334,9 +433,6 @@ class LinuxPortTestCase(unittest.TestCase):
 
         self.assertEqual([], id_disks)
         self.assertEqual([], id_serial)
-
-    def test_(self):
-        pass
 
 
 if __name__ == '__main__':

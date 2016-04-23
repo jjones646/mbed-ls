@@ -4,7 +4,6 @@
 
 # Table of contents
 
-* [Table of contents](#table-of-contents)
 * [Description](#description)
 * [Rationale](#rationale)
 * [Installation](#installation)
@@ -21,15 +20,17 @@
   * [Mock command line examples](#mock-command-line-examples)
   * [Mocking example with Freescale K64F platform](#mocking-example-with-freescale-k64f-platform)
 * [mbed-ls unit testing](#mbed-ls-unit-testing)
+  * [Code coverage](#code-coverage)
 * [Configure mbed-enabled device to work with your host](#configure-mbed-enabled-device-to-work-with-your-host)
   * [Windows serial port configuration](#windows-serial-port-configuration)
   * [Mounting with sync](#mounting-with-sync)
     * [Ubuntu](#ubuntu)
+  * [Raspberry Pi - Raspbian Jessie Lite](#raspberry-pi---raspbian-jessie-lite)
 * [Known issues](#known-issues)
 
 # Description
 
-mbed-lstools is a Python module that detects and lists mbed-enabled devices connected to the host computer. It will be delivered as a redistributable Python module (package) and command line tool.
+```mbed-ls``` is a _Python 2.7_ module that detects and lists mbed-enabled devices connected to the host computer. It will be delivered as a redistributable Python module (package) and command line tool.
 
 Currently supported operating system:
 
@@ -54,7 +55,7 @@ When connecting more than one mbed-enabled device to the host computer, it takes
 
 mbed-ls module is redistributed via PyPI. We recommend you use the [application pip](https://pip.pypa.io/en/latest/installing.html#install-pip).
 
-**Note:** Python 2.7.9 and later (on the Python 2 series), and Python 3.4 and later include pip by default, so you may have pip already.
+**Note:** Python 2.7.9 onwards include ```pip``` by default, so you may have ```pip``` already.
 
 To install mbed-ls from [PyPI](https://pypi.python.org/pypi/mbed-ls) use command:
 ```
@@ -528,6 +529,37 @@ Ran 18 tests in 0.302s
 OK
 ```
 
+## Code coverage
+
+We can measure code coverage for unit tests deployed together with ```mbed-ls```. To do so we can use popular Python ```coverage``` tools.
+First install ```coverage``` tool on your system:
+```
+$ pip install coverage --upgrade
+```
+
+Next go to ```mbed-ls``` local directory and execute coverage for unit tests:
+```
+$ cd mbed-ls
+$ coverage run setup.py test
+```
+
+Above command will execute test cases and will grab code coverage numbers. Now we are ready to print code coverage for all tests we've run:
+
+```
+$ coverage report
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+mbed_lstools\__init__.py                    2      0   100%
+mbed_lstools\lstools_base.py              246    169    31%
+mbed_lstools\lstools_darwin.py             88     77    13%
+mbed_lstools\lstools_linux_generic.py     148     51    66%
+mbed_lstools\lstools_ubuntu.py              5      0   100%
+mbed_lstools\lstools_win7.py              112     60    46%
+mbed_lstools\main.py                       90     63    30%
+-----------------------------------------------------------
+TOTAL                                     691    420    39%
+```
+
 # Configure mbed-enabled device to work with your host
 
 ## Windows serial port configuration
@@ -584,6 +616,34 @@ $ groups USERNAME
 ```
 
 This ```usbmount``` configuration will auto-mount your mbed devices without need to type ```mount``` commands each time you plug your mbeds!
+
+## Raspberry Pi - Raspbian Jessie Lite
+For Raspberry Pi you can use [LDM](https://github.com/LemonBoy/ldm): A lightweight device mounter. This should improve stability of your mounts when using mbed-ls on Raspberry Pi. Currently we are using it with _Raspbian Jessie Lite_.
+
+How to install and use LDM on your Raspberry Pi in three easy steps:
+
+Install LDM:
+```
+$ git clone git@github.com:LemonBoy/ldm.git
+$ cd ldm
+$ sudo make install
+```
+
+Add LDM configuration file and configuration itself. Remember to change the ```your_own_user_name``` to valid username.
+```
+$ sudo touch /etc/ldm.conf
+$ echo 'MOUNT_OWNER=your_own_user_name' >> /etc/ldm.conf
+$ echo 'BASE_MOUNTPOINT=/mnt' >> /etc/ldm.conf
+```
+
+Enable LDM:
+```
+$ systemctl status ldm
+$ sudo systemctl enable ldm
+```
+
+Now you probably have to reboot and enjoy more stable ```mbed-ls``` queries with your Raspberry Pi (Raspbian Jessie Lite).
+
 
 # Known issues
 * Users reported issues while using ```mbed-ls``` on VM (Virtual Machines).

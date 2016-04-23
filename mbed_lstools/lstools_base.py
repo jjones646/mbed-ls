@@ -107,6 +107,7 @@ class MbedLsToolsBase:
         "1010": "LPC1768",
         "1017": "HRM1017",
         "1018": "SSCI824",
+        "1019": "TY51822R3",
         "1034": "LPC11U34",
         "1040": "LPC11U24",
         "1045": "LPC11U24",
@@ -129,6 +130,7 @@ class MbedLsToolsBase:
         "1234": "UBLOX_C027",
         "1235": "UBLOX_C027",
         "1300": "NUC472-NUTINY",
+        "1301": "NUMBED",
         "1549": "LPC1549",
         "1600": "LPC4330_M4",
         "1605": "LPC4330_M4",
@@ -140,6 +142,9 @@ class MbedLsToolsBase:
         "2025": "EFM32TG_STK3300",
         "2030": "EFM32ZG_STK3200",
         "2100": "XBED_LPC1768",
+        "2201": "WIZWIKI_W7500",
+        "2202": "WIZWIKI_W7500ECO",
+        "2203": "WIZWIKI_W7500P",
         "3001": "LPC11U24",
         "4000": "LPC11U35_Y5_MBUG",
         "4005": "NRF51822_Y5_MBUG",
@@ -482,15 +487,20 @@ class MbedLsToolsBase:
     def get_mbed_htm_lines(self, mount_point):
         result = []
         if mount_point:
-            for mount_point_file in [f for f in listdir(mount_point) if isfile(join(mount_point, f))]:
-                if mount_point_file.lower() == self.MBED_HTM_NAME:
-                    mbed_htm_path = os.path.join(mount_point, mount_point_file)
-                    try:
-                        with open(mbed_htm_path, 'r') as f:
-                            result = f.readlines()
-                    except IOError:
-                        if self.DEBUG_FLAG:
-                            self.debug(self.get_mbed_htm_target_id.__name__, ('Failed to open file', mbed_htm_path))
+            try:
+                for mount_point_file in [f for f in listdir(mount_point) if isfile(join(mount_point, f))]:
+                    if mount_point_file.lower() == self.MBED_HTM_NAME:
+                        mbed_htm_path = os.path.join(mount_point, mount_point_file)
+                        try:
+                            with open(mbed_htm_path, 'r') as f:
+                                result = f.readlines()
+                        except IOError:
+                            if self.DEBUG_FLAG:
+                                self.debug(self.get_mbed_htm_target_id.__name__, ('Failed to open file', mbed_htm_path))
+            except OSError:
+                if self.DEBUG_FLAG:
+                    self.debug(self.get_mbed_htm_target_id.__name__, ('Failed to list mount point', mount_point))
+
         return result
 
     def get_details_txt(self, mount_point):
